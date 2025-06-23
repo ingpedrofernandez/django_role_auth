@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
+from .models import Client
+
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -47,3 +49,26 @@ class ProfilePictureForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['profile_pic']
+
+
+class ClientAddForm(forms.ModelForm):
+    user = forms.CharField(max_length=100, required=False)
+    firstname = forms.CharField(max_length=100, required=False)
+    lastname = forms.CharField(max_length=100, required=False)
+    email = forms.EmailField(required=False)
+    mobile = forms.IntegerField()
+    client_pic = forms.ImageField(required=False, label='Change Client Photo')
+
+    class Meta:
+        model = Client
+        fields = ['user', 'firstname', 'lastname', 'email', 'mobile', 'client_pic']
+        help_texts = {
+            'email': None,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = False
+
+
+

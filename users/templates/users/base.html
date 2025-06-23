@@ -42,6 +42,9 @@
             .isDisabled {
             pointer-events: none;
             }
+            .nav-item dropdown dropleft a:hover {
+            color: black;
+            }
 
 
         </style>
@@ -51,20 +54,38 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-dark">
             <div class="container px-4 px-lg-5">
                 <a class="navbar-brand" href="{% url 'index' %}"><h3>Django Auth</h3></a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                    <ul class="navbar-nav mr-auto py-4 py-lg-0">
                         {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                        <img style='border:3px solid #FFFFC2 ;border-radius: 50%; margin-top: 13px; margin-left: 40px;' src="{{ user.profile.profile_pic.url }}" alt="{{ user.username }}" width="50" height="50">
+                        </li>
                         <li class="nav-item"><a class="isDisabled nav-link px-lg-3 py-3 py-lg-4" href=""> {{ user.email }} </a></li>
                         <li class="nav-item"><a class="isDisabled nav-link px-lg-3 py-3 py-lg-4" href="">Role:  {{ user.profile.role }} </a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'users-profile' %}">Profile</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'logout_user' %}">Logout</a></li>
-                        <li class="nav-item">
-                        <img style='border:3px solid #FFFFC2 ;border-radius: 50%; margin-top: 13px; margin-left: 40px;' src="{{ user.profile.profile_pic.url }}" alt="{{ user.username }}" width="50" height="50">
-                        </li>
+
+
+                        <li class="nav-item dropdown dropleft">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img style='border:3px solid #FFFFC2 ;border-radius: 50%; margin-top: 5px; margin-left: 40px;' src="{{ user.profile.profile_pic.url }}" alt="{{ user.username }}" width="50" height="50">
+                        </a>
+                          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="
+                           margin-top: 70px; margin-right: -70px; background-color:black">
+                          <a class="dropdown-item" style="background-color:black" href="{% url 'clients' %}">Add Clients</a>
+                              <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" style="background-color:black" href="{% url 'users-profile' %}">Profile</a>
+                              <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" style="background-color:black" href="{% url 'logout_user' %}">Log Out</a>
+                          </div>
+                          </li>
+
+
                         {% else %}
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'users-register' %}">Register</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'users-login' %}">Login</a></li>

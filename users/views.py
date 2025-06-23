@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
-from . forms import UserRegistrationForm, UserProfileForm, ProfilePictureForm
+from django.shortcuts import render, redirect, get_object_or_404
+from . forms import UserRegistrationForm, UserProfileForm, ProfilePictureForm, ClientAddForm
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
+from .models import Client
+
 
 # Create your views here.
 def index(request):
@@ -72,3 +74,70 @@ class UserPasswordChangeView(PasswordChangeView):
     def form_valid(self, form):
         messages.success(self.request, 'Your password has been changed.')
         return super().form_valid(form)
+
+
+
+def clients(request):
+    if request.method == 'POST':
+        data = request.POST
+        client_pic = request.FILES.get('client_pic')
+        firstname = data.get('firstname')
+        lastname = data.get('lastname')
+        email = data.get('email')
+        mobile = data.get('mobile')
+
+        Client.objects.create(
+            client_pic=client_pic,
+            firstname=firstname,
+            lastname=lastname,
+            email=email,
+            mobile=mobile,
+        )
+        messages.success(request, f'Client created for the email {email}')
+        return redirect('clients')
+
+    queryset = Client.objects.all()
+    if request.GET.get('search'):
+        queryset = queryset.filter(email__icontains=request.GET.get('search'))
+
+    context = {'clients': queryset}
+    return render(request, 'users/clients.html', context)
+
+
+def update_client(request, id):
+    client = get_object_or_404(Client, id=id)
+    if request.method == 'POST':
+        data = request.POST
+        firstname = data.get('firstname')
+        lastname = data.get('lastname')
+        email = data.get('email')
+        mobile = data.get('mobile')
+        client_pic = request.FILES.get('client_pic')
+
+
+        client.firstname = firstname
+        client.lastname = lastname
+        client.email = email
+        client.mobile = mobile
+        if client_pic:
+            client.client_pic = client_pic
+        client.save()
+        messages.info(request, f'Client updated for the email {email}')
+        return redirect('clients')
+
+    context = {'client': client}
+    return render(request, 'users/update_client.html', context)
+
+
+
+def delete_client(request, id):
+    client = get_object_or_404(Client, id=id)
+    client.delete()
+    messages.error(request, 'Client deleted')
+    return redirect('clients')
+
+
+def show_client(request, id):
+    client = get_object_or_404(Client, id=id)
+    context = {'client': client}
+    return render(request, 'users/show_client.html', context)

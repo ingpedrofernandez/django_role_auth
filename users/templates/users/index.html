@@ -3,6 +3,21 @@
 {% block content %}
 
 <!-- Main Content-->
-    <h1>THIS IS THE INDEX PAGE!!!</h1>
+    {% if not request.user.is_authenticated %}
+         <br><br>
+         <center><h1>THIS IS THE INDEX PAGE!!!</h1></center>
+    {% else %}
+        {% if user.profile.role == 'admin' %}
+            <br><br>
+            <center><h1>ADMIN AREA</h1></center><br><br><br>
+            <center><h3>Username: {{ user.username }}</h3></center>
+            <br><br><br>
+        {% else %}
+            <br><br>
+            <center><h1>USER AREA</h1></center><br><br><br>
+            <center><h3>Username: {{ user.username }}</h3></center>
+            <br><br><br>
+        {% endif %}
+    {% endif %}
 
 {% endblock %}

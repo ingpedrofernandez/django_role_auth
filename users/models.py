@@ -20,6 +20,14 @@ class Profile(models.Model):
 
 
 
+class Client(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    firstname = models.CharField(max_length=100)
+    lastname = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
+    mobile = models.BigIntegerField()
+    client_pic = models.ImageField(upload_to='clients')
 
 
-
+    def __str__(self):
+        return self.email
